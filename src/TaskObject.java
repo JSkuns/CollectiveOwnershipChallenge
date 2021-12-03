@@ -6,16 +6,8 @@ public class TaskObject {
     private static int idGenerator = 1;
     private Subject owner; // владелец объекта
     public TaskObject(String name) {
-        this.name = name;
         id = idGenerator++;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+        this.name = name + id;
     }
 
     public Subject getOwner() {
@@ -26,21 +18,29 @@ public class TaskObject {
         this.owner = owner;
     }
 
+    public boolean freeObj() {
+        return getOwner() == null;
+    }
+
+    public void delOwner() {
+        owner = null;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TaskObject that = (TaskObject) o;
-        return id == that.id;
+        return id == that.id && Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(name, id);
     }
 
     @Override
     public String toString() {
-        return name + id + (owner == null ? "" : " >>> " + owner);
+        return name;
     }
 }

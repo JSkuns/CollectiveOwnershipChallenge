@@ -2,49 +2,41 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
-        int numObj = 20; // количество объектов
+        int numObj = 10; // количество объектов
         int numSub = 5; // количество субъектов
         int numOwn = 3; // количество возможных объектов владения для субъекта
 
-        Random random = new Random(); // нужен для случайного выбора возможных объектов владения
-
-        Set<TaskObject> listObj = new HashSet<>(); // коллекция всех уникальных объектов
-        Set<Subject> listSub = new HashSet<>(); // коллекция всех уникальных субъектов
+        Random random = new Random();
+        Justice justice = new Justice();
 
         // заполняем коллекцию объектами
         for (int i = 0; i < numObj; i++) {
-            listObj.add(new TaskObject("Ob_")); // вводим имя объекта
+            justice.setListObj(new TaskObject("Ob_"), null); // вводим объект в лист объектов
         }
 
         // заполняем коллекцию субъектами
         for (int i = 0; i < numSub; i++) {
-            Map<TaskObject, Boolean> tempList = new HashMap<>(); // коллекция возможных объектов владения
+            Subject subject = new Subject("S_", true); // random.nextBoolean()
 
             // заполняем коллекцию возможных объектов владения, случайным образом, из созданного ранее листа объектов
             for (int j = 0; j < numOwn; j++) {
-                tempList.put((TaskObject) listObj.toArray()[random.nextInt(listObj.size())], false);
+                int keyRandom = random.nextInt(justice.getListObj().size());
+                TaskObject obj = justice.getListObj().keySet().stream().toList().get(keyRandom);
+                subject.setListOwn(obj, false);
             }
-
-            listSub.add(new Subject("Sb_", tempList, true)); // вводим имя субъекта и его приоритет
+            justice.setListSub(subject); // вводим субъекта
         }
-
-        Justice justice = new Justice(listObj,listSub);
-
-        printListObj(listObj);
-        printListSub(listSub);
-    }
-
-    public static void printListObj(Set<TaskObject> list) {
-        Iterator<TaskObject> iter = list.iterator();
-        while (iter.hasNext()) {
-            System.out.println(iter.next());
+        justice.printListObj(justice.getListObj());
+        justice.printListSub(justice.getListSub());
+        for (int i = 0; i<10; i++) {
+            justice.oneSubJust(justice.getListSub().first());
+            justice.sortedSub();
+            System.out.println("Этап_" + i);
+            justice.printListSub(justice.getListSub());
         }
     }
 
-    public static void printListSub(Set<Subject> subjects) {
-        Iterator<Subject> iter = subjects.iterator();
-        while (iter.hasNext()) {
-            System.out.println(iter.next());
-        }
-    }
+
+
+
 }
